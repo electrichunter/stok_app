@@ -1,29 +1,59 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDBConnection } from "@/app/api/info/db";
 
+// 📌 Tüm ürünleri listeleme
+export async function GET() {
+    const db = await getDBConnection();
+    try {
+        const [products] = await db.execute(
+            "SELECT * FROM products ORDER BY product_id ASC"
+        );
+        return NextResponse.json(products);
+    } catch (error) {
+        console.error("Ürün çekme hatası:", error);
+        return NextResponse.json({ error: "Ürün çekme hatası" }, { status: 500 });
+    }
+}
+
+// 📌 En son 4 ürünü listeleme
+export async function GETLatest() {
+    const db = await getDBConnection();
+    try {
+        const [latestProducts] = await db.execute(
+            "SELECT * FROM products ORDER BY product_id DESC LIMIT 4"
+        );
+        return NextResponse.json(latestProducts);
+    } catch (error) {
+        console.error("Son ürünleri çekme hatası:", error);
+        return NextResponse.json({ error: "Son ürünleri çekme hatası" }, { status: 500 });
+    }
+}
+
+// 📌 Ürün ekleme
 export async function POST(request: NextRequest) {
     const db = await getDBConnection();
     try {
-        const data = await request.json();
+        const { product_name, category_id, barcode, stock_quantity, price_in_dollars, info, user_id, updated_by_user_id } = await request.json();
 
-        if (!data.product_name || !data.category_id || !data.barcode || !data.stock_quantity || !data.price_in_dollars) {
-            return NextResponse.json({ error: "Eksik alanlar var." }, { status: 400 });
+        if (!product_name || !category_id || !barcode || !stock_quantity || !price_in_dollars) {
+            return NextResponse.json({ error: "Tüm alanlar zorunludur!" }, { status: 400 });
         }
 
         const query = `
-            INSERT INTO products (product_name, category_id, barcode, stock_quantity, price_in_dollars, info, created_at, updated_at, user_id, updated_by_user_id)
+            INSERT INTO products
+            (product_name, category_id, barcode, stock_quantity, price_in_dollars, info, created_at, updated_at, user_id, updated_by_user_id)
             VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?)
         `;
-
+        
         await db.execute(query, [
-            data.product_name,
-            data.category_id,
-            data.barcode,
-            data.stock_quantity,
-            data.price_in_dollars,
-            data.info || null,
-            data.user_id || 1,
-            data.updated_by_user_id || 1
+            product_name,
+            category_id,
+            barcode,
+            stock_quantity,
+            price_in_dollars,
+            info,
+            user_id,
+            updated_by_user_id
         ]);
 
         return NextResponse.json({ success: true, message: "Ürün başarıyla eklendi!" });
@@ -31,20 +61,33 @@ export async function POST(request: NextRequest) {
         console.error("Ürün ekleme hatası:", error);
         return NextResponse.json({ error: "Ürün eklenirken bir hata oluştu." }, { status: 500 });
     }
-}
-
-
-
-export async function GET() {
-    const db = await getDBConnection(); // Bağlantı havuzundan bir bağlantı alın
-    try {
-        const [products] = await db.execute(
-            "SELECT * FROM products ORDER BY product_id ASC"
-        );
-        
-        return NextResponse.json(products);
-    } catch (error) {
-        console.error("Ürün çekme hatası:", error);
-        return NextResponse.json({ error: "Ürün çekme hatası" }, { status: 500 });
     }
-}
+    // 📌 Ürün güncelleme
+    export async function PUT(request: NextRequest) {
+        const db = await getDBConnection();
+        try {
+            // Request'den gelen JSON verisini al
+            const { product_id, product_name, category_id, stock_quantity, price_in_dollars } = await request.json();
+    
+            // Gerekli alanların kontrolü
+            if (!product_id || !product_name || !category_id || !stock_quantity || !price_in_dollars) {
+                return NextResponse.json({ error: "Tüm alanlar zorunludur!" }, { status: 400 });
+            }
+    
+            // SQL sorgusu
+            const query = `
+                UPDATE products 
+                SET product_name = ?, category_id = ?, stock_quantity = ?, price_in_dollars = ?, updated_at = NOW()
+                WHERE product_id = ?
+            `;
+    
+            // Veritabanı işlemi
+            await db.execute(query, [product_name, category_id, stock_quantity, price_in_dollars, product_id]);
+    
+            // Başarı durumunda yanıt
+            return NextResponse.json({ success: true, message: "Ürün başarıyla güncellendi!" });
+        } catch (error) {
+            console.error("Ürün güncelleme hatası:", error);
+            return NextResponse.json({ error: "Ürün güncellenirken hata oluştu." }, { status: 500 });
+        }
+    }
