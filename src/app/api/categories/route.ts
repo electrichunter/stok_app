@@ -21,6 +21,6 @@ export async function GET() {
         return NextResponse.json({ error: "Kategori çekme hatası" }, { status: 500 });
     } finally {
         // Veritabanı bağlantısını kapatıyoruz
-        if (db) db.end();
+        /* if (db) db.end(); */
     }
 }

@@ -1,37 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDBConnection } from "@/app/api/info/db";
 
-// API'den gelen veri ile ürün eklemek
 export async function POST(request: NextRequest) {
-    const db = await getDBConnection(); // Bağlantı havuzundan bir bağlantı alın
+    const db = await getDBConnection();
     try {
-        const {   product_name, category_id, barcode, stock_quantity, price_in_dollars, info, user_id, updated_by_user_id } = await request.json();
-        
+        const data = await request.json();
+
+        if (!data.product_name || !data.category_id || !data.barcode || !data.stock_quantity || !data.price_in_dollars) {
+            return NextResponse.json({ error: "Eksik alanlar var." }, { status: 400 });
+        }
+
         const query = `
-            INSERT INTO products
-            ( product_name, category_id, barcode, stock_quantity, price_in_dollars, info, created_at, updated_at, user_id, updated_by_user_id)
-            VALUES (  ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?)
+            INSERT INTO products (product_name, category_id, barcode, stock_quantity, price_in_dollars, info, created_at, updated_at, user_id, updated_by_user_id)
+            VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?)
         `;
-        
-        // Veritabanına veri ekleme
-        const [result] = await db.execute(query, [
-     
-            product_name,
-            category_id,
-            barcode,
-            stock_quantity,
-            price_in_dollars,
-            info,
-            user_id,
-            updated_by_user_id
+
+        await db.execute(query, [
+            data.product_name,
+            data.category_id,
+            data.barcode,
+            data.stock_quantity,
+            data.price_in_dollars,
+            data.info || null,
+            data.user_id || 1,
+            data.updated_by_user_id || 1
         ]);
-        
+
         return NextResponse.json({ success: true, message: "Ürün başarıyla eklendi!" });
     } catch (error) {
         console.error("Ürün ekleme hatası:", error);
         return NextResponse.json({ error: "Ürün eklenirken bir hata oluştu." }, { status: 500 });
     }
 }
+
+
 
 export async function GET() {
     const db = await getDBConnection(); // Bağlantı havuzundan bir bağlantı alın
