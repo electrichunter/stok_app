@@ -14,7 +14,6 @@ const StokEkle: React.FC = () => {
     const [categories, setCategories] = useState<{ category_id: number; category_name: string }[]>([]);
 
     useEffect(() => {
-        // Kategorileri backend'den çek
         fetch("/api/categories")
             .then((res) => res.json())
             .then((data) => setCategories(data))
@@ -65,18 +64,18 @@ const StokEkle: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-screen bg-gray-600 w-3xl mx-auto rounded-lg shadow-lg p-8">
+        <div className="flex flex-col items-center justify-center h-screen bg-transparent w-3xl mx-auto rounded-lg shadow-lg p-8">
             <h1 className="text-4xl font-bold mb-6 text-white">Stok Ekle</h1>
-            <form className="shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-xs" onSubmit={handleSubmit}>
+            <form className="shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-xs bg-transparent" onSubmit={handleSubmit}>
                 <div className="mb-4">
-                    <label className="block text-gray-200 text-sm font-bold mb-2" htmlFor="stokAdi">Stok Adı</label>
+                    <label className="block text-white text-sm font-bold mb-2" htmlFor="stokAdi">Stok Adı</label>
                     <input type="text" id="stokAdi" value={formData.stokAdi} onChange={handleChange} placeholder="Stok Adı"
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 focus:outline-none focus:shadow-outline" />
+                        className="shadow appearance-none border rounded w-full py-2 px-3 bg-transparent text-white focus:outline-none focus:shadow-outline" />
                 </div>
                 <div className="mb-4">
-                    <label className="block text-gray-200 text-sm font-bold mb-2" htmlFor="categoryId">Stok Kategori</label>
+                    <label className="block text-white text-sm font-bold mb-2" htmlFor="categoryId">Stok Kategori</label>
                     <select id="categoryId" value={formData.categoryId} onChange={handleChange}
-                        className="shadow border rounded w-full py-2 px-3 text-gray-900 focus:outline-none focus:shadow-outline">
+                        className="shadow border rounded w-full py-2 px-3 bg-transparent text-white focus:outline-none focus:shadow-outline">
                         <option value="">Kategori Seç</option>
                         {categories.map((cat) => (
                             <option key={String(cat.category_id)} value={String(cat.category_id)}>
@@ -84,26 +83,26 @@ const StokEkle: React.FC = () => {
                             </option>
                         ))}
                     </select>
-                </div>
+                </div>  
                 <div className="mb-4">
-                    <label className="block text-gray-200 text-sm font-bold mb-2" htmlFor="stokMiktari">Stok Miktarı</label>
+                    <label className="block text-white text-sm font-bold mb-2" htmlFor="stokMiktari">Stok Miktarı</label>
                     <input type="number" id="stokMiktari" value={formData.stokMiktari} onChange={handleChange} placeholder="Stok Miktarı"
-                        className="shadow border rounded w-full py-2 px-3 text-gray-900 focus:outline-none focus:shadow-outline" />
+                        className="shadow border rounded w-full py-2 px-3 bg-transparent text-white focus:outline-none focus:shadow-outline" />
                 </div>
                 <div className="mb-4">
-                    <label className="block text-gray-200 text-sm font-bold mb-2" htmlFor="stokFiyati">Stok Fiyatı</label>
+                    <label className="block text-white text-sm font-bold mb-2" htmlFor="stokFiyati">Stok Fiyatı</label>
                     <input type="number" id="stokFiyati" value={formData.stokFiyati} onChange={handleChange} placeholder="Stok Fiyatı"
-                        className="shadow border rounded w-full py-2 px-3 text-gray-900 focus:outline-none focus:shadow-outline" />
+                        className="shadow border rounded w-full py-2 px-3 bg-transparent text-white focus:outline-none focus:shadow-outline" />
                 </div>
                 <div className="mb-4">
-                    <label className="block text-gray-200 text-sm font-bold mb-2" htmlFor="stokBarkodu">Stok Barkodu</label>
+                    <label className="block text-white text-sm font-bold mb-2" htmlFor="stokBarkodu">Stok Barkodu</label>
                     <input type="number" id="stokBarkodu" value={formData.stokBarkodu} onChange={handleChange} placeholder="Stok Barkodu"
-                        className="shadow border rounded w-full py-2 px-3 text-gray-900 focus:outline-none focus:shadow-outline" />
+                        className="shadow border rounded w-full py-2 px-3 bg-transparent text-white focus:outline-none focus:shadow-outline" />
                 </div>
                 <div className="mb-4">
-                    <label className="block text-gray-200 text-sm font-bold mb-2" htmlFor="bilgi">Bilgi</label>
+                    <label className="block text-white text-sm font-bold mb-2" htmlFor="bilgi">Bilgi</label>
                     <input type="text" id="bilgi" value={formData.bilgi} onChange={handleChange} placeholder="Bilgi"
-                        className="shadow border rounded w-full py-2 px-3 text-gray-900 focus:outline-none focus:shadow-outline" />
+                        className="shadow border rounded w-full py-2 px-3 bg-transparent text-white focus:outline-none focus:shadow-outline" />
                 </div>
                 <div className="flex items-center justify-between">
                     <button type="submit"
