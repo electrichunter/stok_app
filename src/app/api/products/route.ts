@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDBConnection } from "@/app/api/info/db";
-
-// 📌 Tüm ürünleri listeleme
+ 
 export async function GET() {
     const db = await getDBConnection();
     try {
         const [products] = await db.execute(
-            "SELECT * FROM products ORDER BY product_id ASC"
+            `SELECT p.product_id, p.barcode, p.product_name, p.category_id, 
+                    p.stock_quantity, p.price_in_dollars, c.category_name 
+             FROM products p
+             LEFT JOIN categories c ON p.category_id = c.category_id
+             ORDER BY p.product_id ASC`
         );
         return NextResponse.json(products);
     } catch (error) {
