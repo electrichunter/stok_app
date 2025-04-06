@@ -4,9 +4,12 @@ import Link from 'next/link';
 
 const stokEklePath = '/stokekle';
 const stokGuncellePath = '/stokguncelle';
+const categoryEklePath = '/categoriekle';
+const categoryGuncellePath = '/categoriekle/categoriguncelle';
 
 const Menu: React.FC = () => {
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isStokDropdownOpen, setIsStokDropdownOpen] = useState(false);
+    const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
 
     return (
         <nav className="bg-neutral-700 p-4 flex items-center justify-between w-full text-2xl border-b border rounded-3xl z-50">
@@ -16,14 +19,18 @@ const Menu: React.FC = () => {
                         Home
                     </Link>
                 </li>
+
                 <li className="relative border-l border-neutral-600 pl-4">
                     <button
                         className="text-white hover:text-gray-400"
-                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        onClick={() => {
+                            setIsStokDropdownOpen(!isStokDropdownOpen);
+                            setIsCategoryDropdownOpen(false);
+                        }}
                     >
                         Stok İşlemleri
                     </button>
-                    {isDropdownOpen && (
+                    {isStokDropdownOpen && (
                         <ul className="absolute left-0 mt-2 w-48 bg-neutral-800 shadow-lg rounded-lg">
                             <li>
                                 <Link href={stokEklePath} className="block px-4 py-2 text-white hover:bg-neutral-600">
@@ -33,6 +40,32 @@ const Menu: React.FC = () => {
                             <li>
                                 <Link href={stokGuncellePath} className="block px-4 py-2 text-white hover:bg-neutral-600">
                                     Stok Güncelle
+                                </Link>
+                            </li>
+                        </ul>
+                    )}
+                </li>
+
+                <li className="relative border-l border-neutral-600 pl-4">
+                    <button
+                        className="text-white hover:text-gray-400"
+                        onClick={() => {
+                            setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
+                            setIsStokDropdownOpen(false);
+                        }}
+                    >
+                        Kategori İşlemleri
+                    </button>
+                    {isCategoryDropdownOpen && (
+                        <ul className="absolute left-0 mt-2 w-48 bg-neutral-800 shadow-lg rounded-lg">
+                            <li>
+                                <Link href={categoryEklePath} className="block px-4 py-2 text-white hover:bg-neutral-600">
+                                    Kategori Ekle
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href={categoryGuncellePath} className="block px-4 py-2 text-white hover:bg-neutral-600">
+                                    Kategori Güncelle
                                 </Link>
                             </li>
                         </ul>
